@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 const User = new mongoose.Schema(
   {
-    name: {
+    username: {
       type: String,
       required: [true, 'Please enter a full name'],
       index: true,
@@ -16,6 +16,14 @@ const User = new mongoose.Schema(
       index: true,
     },
 
+    quizes: {
+      type: Array,
+      default: []
+    },
+    totalQuizes: {
+      type: Number,
+      default: 0
+    },
     password: String,
 
     salt: String,

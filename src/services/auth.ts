@@ -12,7 +12,7 @@ import events from '../subscribers/events';
 export default class AuthService {
   constructor(
     @Inject('userModel') private userModel: Models.UserModel,
-    private mailer: MailerService,
+    // private mailer: MailerService,
     @Inject('logger') private logger,
     @EventDispatcher() private eventDispatcher: EventDispatcherInterface,
   ) {
@@ -53,7 +53,7 @@ export default class AuthService {
         throw new Error('User cannot be created');
       }
       this.logger.silly('Sending welcome email');
-      await this.mailer.SendWelcomeEmail(userRecord);
+      // await this.mailer.SendWelcomeEmail(userRecord);
 
       this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
 
@@ -63,7 +63,7 @@ export default class AuthService {
        * that transforms data from layer to layer
        * but that's too over-engineering for now
        */
-      const user = userRecord.toObject();
+      const user:any = userRecord.toObject();
       Reflect.deleteProperty(user, 'password');
       Reflect.deleteProperty(user, 'salt');
       return { user, token };
@@ -88,7 +88,7 @@ export default class AuthService {
       this.logger.silly('Generating JWT');
       const token = this.generateToken(userRecord);
 
-      const user = userRecord.toObject();
+      const user:any = userRecord.toObject();
       Reflect.deleteProperty(user, 'password');
       Reflect.deleteProperty(user, 'salt');
       /**
