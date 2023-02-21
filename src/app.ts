@@ -8,6 +8,7 @@ import Logger from './loaders/logger';
 
 async function startServer() {
   const app = express();
+  app.use(express.json())
 
   /**
    * A little hack here
