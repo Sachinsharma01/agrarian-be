@@ -19,13 +19,13 @@ export default {
   /**
    * That long string from mlab
    */
-  databaseURL: process.env.MONGODB_URI,
+  databaseURL: process.env.MONGODB_URI || 'mongodb+srv://arpit2252:@horux12@cluster0.e7z6hlw.mongodb.net/?retryWrites=true&w=majority',
 
   /**
    * Your secret sauce
    */
-  jwtSecret: process.env.JWT_SECRET,
-  jwtAlgorithm: process.env.JWT_ALGO,
+  jwtSecret: process.env.JWT_SECRET || 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY1OTI5NDYxMCwiaWF0IjoxNjU5Mjk0NjEwfQ.FSji16ZMIvl82GDjxekgMmP0WegfbYg_KyYgChYGvVg',
+  jwtAlgorithm: process.env.JWT_ALGO || 'HS256',
 
   /**
    * Used by winston logger
