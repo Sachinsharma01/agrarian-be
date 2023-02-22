@@ -38,4 +38,33 @@ export default class twilioService {
       }
     }
   }
+  public async verifyOtp(input:any) {
+    try {
+      this.logger.info('Twilio verify otp service starts here %o', input);
+      const axiosReqObj = {
+        url: config.twilio.verifyOtp,
+        method: 'POST',
+        headers: {
+          Authorization: `Basic ${config.twilio.twilioAuthToken}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: {
+          To: input.phone,
+          Code: input.otp,
+        },
+      };
+      const response = await axios(axiosReqObj);
+      const data = await response.data;
+      this.logger.debug('Twilio verify OTP response %o', data);
+      return data;
+    } catch(err) {
+      if (err instanceof ErrorHandler.BadError) {
+        this.logger.error('verify Otp twilio service fails with error %o', err);
+        throw err;
+      } else {
+        this.logger.error('Generate Otp twilio service end with error %o', err);
+        throw new ErrorHandler.BadError('OOPS! Something went wrong please try again later.');
+      }
+    }
+  }
 }

@@ -14,4 +14,11 @@ export default (app: any) => {
     }),
     controller.getOtp,
   );
+  route.post(
+    '/verify-otp',
+    celebrate({
+      body: validations.verifyOtp,
+    }),
+    controller.verifyOtp,
+  );
 };
