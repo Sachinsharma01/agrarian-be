@@ -1,4 +1,4 @@
-import { Service, Inject } from 'typedi';
+import { Service, Inject, Container } from 'typedi';
 import jwt from 'jsonwebtoken';
 import MailerService from './mailer';
 import config from '../config';
@@ -7,6 +7,9 @@ import { randomBytes } from 'crypto';
 import { IUser, IUserInputDTO } from '../interfaces/IUser';
 import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 import events from '../subscribers/events';
+import ErrorHandler from '../utility/errors';
+import { ERROR_CODES } from '../config/errors';
+import twilioService from './twilio';
 
 @Service()
 export default class AuthService {
@@ -15,8 +18,7 @@ export default class AuthService {
     // private mailer: MailerService,
     @Inject('logger') private logger,
     @EventDispatcher() private eventDispatcher: EventDispatcherInterface,
-  ) {
-  }
+  ) {}
 
   public async SignUp(userInputDTO: IUserInputDTO): Promise<{ user: IUser; token: string }> {
     try {
@@ -63,7 +65,7 @@ export default class AuthService {
        * that transforms data from layer to layer
        * but that's too over-engineering for now
        */
-      const user:any = userRecord.toObject();
+      const user: any = userRecord.toObject();
       Reflect.deleteProperty(user, 'password');
       Reflect.deleteProperty(user, 'salt');
       return { user, token };
@@ -88,7 +90,7 @@ export default class AuthService {
       this.logger.silly('Generating JWT');
       const token = this.generateToken(userRecord);
 
-      const user:any = userRecord.toObject();
+      const user: any = userRecord.toObject();
       Reflect.deleteProperty(user, 'password');
       Reflect.deleteProperty(user, 'salt');
       /**
@@ -122,7 +124,29 @@ export default class AuthService {
         name: user.name,
         exp: exp.getTime() / 1000,
       },
-      config.jwtSecret
+      config.jwtSecret,
     );
+  }
+
+  public async generateOtp(input: { phone: string }) {
+    try {
+      this.logger.info('Generate OTP Service Starts here %o', input);
+      const addUser = await this.userModel.create({
+        phone: input.phone,
+      });
+      this.logger.debug('Add user %o', addUser);
+      const twilioServiceInstance = Container.get(twilioService);
+      const response = await twilioServiceInstance.generateOtp(input.phone as string);
+      this.logger.info('Generate OTP Twilio response in generate otp service %o', response);
+      return response;
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        this.logger.error('Generate Otp service fails with error %o', err);
+        throw err;
+      } else {
+        this.logger.error('Generate Otp service end with error %o', err);
+        throw new ErrorHandler.BadError(ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGGOTP));
+      }
+    }
   }
 }

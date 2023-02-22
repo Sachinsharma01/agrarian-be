@@ -1,5 +1,5 @@
 {
-  "name": "quiz-app-backend",
+  "name": "agrarian",
   "version": "1.0.0",
   "description": "Quiz App Backend",
   "main": "src/app.ts",
@@ -32,6 +32,7 @@
     "agenda": "^3.1.0",
     "agendash": "^2.1.1",
     "argon2": "^0.27.0",
+    "axios": "^1.3.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "celebrate": "^13.0.3",

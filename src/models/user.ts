@@ -3,35 +3,48 @@ import mongoose from 'mongoose';
 
 const User = new mongoose.Schema(
   {
-    username: {
+    name: {
       type: String,
-      required: [true, 'Please enter a full name'],
-      index: true,
+      default: ""
     },
-
     email: {
       type: String,
-      lowercase: true,
-      unique: true,
-      index: true,
+      default: ""
     },
-
-    quizes: {
-      type: Array,
-      default: []
+    password: {
+      type: String
     },
-    totalQuizes: {
-      type: Number,
-      default: 0
+    crops: {
+      type: [],
+      default: [],
     },
-    password: String,
-
-    salt: String,
-
-    role: {
+    phone: {
+      type: String
+    },
+    address:{
       type: String,
-      default: 'user',
+      default: ""
     },
+    pincode: {
+      type: String,
+      default: ""
+    },
+    city: {
+      type: String,
+      default: ""
+    },
+    state: {
+      type: String,
+      default: ""
+    },
+    otp: {
+      type: Number
+    },
+    image: {
+      type: String,
+      default: ""
+    },
+    
   },
   { timestamps: true },
 );
