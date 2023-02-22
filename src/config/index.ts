@@ -14,17 +14,17 @@ export default {
   /**
    * Your favorite port
    */
-  port: 9000 ||  parseInt(process.env.PORT, 10),
+  port: 9000 || parseInt(process.env.PORT, 10),
 
   /**
    * That long string from mlab
    */
-  databaseURL: process.env.MONGODB_URI || 'mongodb+srv://arpit2252:@horux12@cluster0.e7z6hlw.mongodb.net/?retryWrites=true&w=majority',
+  databaseURL: process.env.MONGODB_URI,
 
   /**
    * Your secret sauce
    */
-  jwtSecret: process.env.JWT_SECRET || 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY1OTI5NDYxMCwiaWF0IjoxNjU5Mjk0NjEwfQ.FSji16ZMIvl82GDjxekgMmP0WegfbYg_KyYgChYGvVg',
+  jwtSecret: process.env.JWT_SECRET,
   jwtAlgorithm: process.env.JWT_ALGO || 'HS256',
 
   /**
@@ -48,7 +48,7 @@ export default {
    */
   agendash: {
     user: 'agendash',
-    password: '123456'
+    password: '123456',
   },
   /**
    * API configs
@@ -62,6 +62,13 @@ export default {
   emails: {
     apiKey: process.env.MAILGUN_API_KEY,
     apiUsername: process.env.MAILGUN_USERNAME,
-    domain: process.env.MAILGUN_DOMAIN
-  }
+    domain: process.env.MAILGUN_DOMAIN,
+  },
+
+  twilio: {
+    sendOtp: process.env.TWILIO_SEND_OTP_URL,
+    verifyOtp: process.env.TWILIO_VERIFY_OTP_URL,
+    templateId: process.env.TWILIO_TWMPLATE_ID,
+    twilioAuthToken: process.env.TWILIO_AUTH_TOKEN,
+  },
 };
