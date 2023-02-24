@@ -123,7 +123,7 @@ export default class AuthService {
         _id: user._id, // We are gonna use this in the middleware 'isAuth'
         role: user.role,
         name: user.name,
-        exp: exp.getTime() / 1000,
+        phone: user.phone,
       },
       config.jwtSecret,
     );

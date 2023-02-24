@@ -16,16 +16,4 @@ export default {
       return APIResponses.badRequest(res, 'OOPS! Cannot process your request ', {});
     }
   },
-  createUser: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      console.info('Customer API createUser starts here', req.body);
-      const customerServiceInstance = Container.get(UsersService);
-      const response = await customerServiceInstance.createUser(req.body);
-      console.log('user created', response);
-      return APIResponses.success(res, 'User registered Successfully', response);
-    } catch (err) {
-      console.log(err);
-      return APIResponses.badRequest(res, 'OOPS! Cannot process your request ', {});
-    }
-  },
 };

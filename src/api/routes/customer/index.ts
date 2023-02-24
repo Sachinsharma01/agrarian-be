@@ -45,19 +45,12 @@ export default (app: any) => {
    *         description: producecs a success response
    */
   route.post(
-    "/getMetaData",
-    // middlewares.isAuth,
-    // middlewares.attachCurrentUser,
+    "/get-meta-data",
+    middlewares.isAuth,
+    middlewares.attachCurrentUser,
     celebrate({
       body: validations.metaData,
     }),
     controller.getMetaData
-  );
-  route.post(
-    "/create-user",
-    celebrate({
-      body: validations.createUser,
-    }),
-    controller.createUser
   );
 };
