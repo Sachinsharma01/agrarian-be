@@ -2,6 +2,9 @@ import { Inject, Service } from 'typedi';
 import ErrorHandler from '../utility/errors';
 import { verify } from 'jsonwebtoken';
 import config from '../config';
+import { IEditdetails } from '../interfaces/IEditdetails';
+import { ERROR_CODES } from '../config/errors';
+import mongoose from 'mongoose';
 
 @Service()
 export default class UsersService {
@@ -25,6 +28,32 @@ export default class UsersService {
     } catch (err) {
       this.logger.error('Error in Get meta data service %o', err);
       throw new ErrorHandler.BadError('getMetaData service end with error!');
+    }
+  }
+  public async editDetails(input: IEditdetails) {
+    try {
+      this.logger.info('edit details service starts here %o', input);
+      const _id = input.currentUser._id;
+      delete input.currentUser;
+      const updateUser = await this.userModel.updateOne(
+        { _id: mongoose.Types.ObjectId(_id) },
+        {
+          $set: {
+            ...input,
+          },
+        },
+      );
+      this.logger.debug('User details updated in DB %o', updateUser);
+      return {
+        ...input
+      }
+    } catch (err) {
+      this.logger.error('edit details service end with error %o', err);
+      if (err instanceof ErrorHandler.BadError) {
+        throw new ErrorHandler.BadError(ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGED_DEF));
+      } else {
+        throw err;
+      }
     }
   }
 }
