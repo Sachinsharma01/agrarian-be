@@ -44,9 +44,10 @@ export default class UsersService {
         },
       );
       this.logger.debug('User details updated in DB %o', updateUser);
-      return {
-        ...input
-      }
+      const updatedUser = await this.userModel.findOne({_id: mongoose.Types.ObjectId(_id)});
+      this.logger.debug('User DB response after updation %o', updatedUser);
+
+      return updatedUser;
     } catch (err) {
       this.logger.error('edit details service end with error %o', err);
       if (err instanceof ErrorHandler.BadError) {
