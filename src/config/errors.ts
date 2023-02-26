@@ -3,7 +3,9 @@ export const ERROR_CODES = {
   AGGOTP_DEF: 'AGGOTP_DEF',
   AGGTW: 'AGGTW',
   AGVOTP_DEF: 'AGVOTP_DEF',
-  AGVOTP: 'AGVOTP'
+  AGVOTP: 'AGVOTP',
+  AGED: 'AGED',
+  AGED_DEF: 'AGED_DEF'
 };
 export const ERRORS_LIST = [
   {
@@ -30,5 +32,15 @@ export const ERRORS_LIST = [
     code: ERROR_CODES.AGVOTP,
     description: 'Agrarian: Verify OTP Error',
     message: 'Verify OTP Error',
+  },
+  {
+    code: ERROR_CODES.AGED,
+    description: 'Agrarian: Edit Details Error',
+    message: 'Edit Details Error',
+  },
+  {
+    code: ERROR_CODES.AGED_DEF,
+    description: 'Agrarian: Edit Details Default Error',
+    message: 'Edit Details Default Error',
   },
 ];

@@ -1,12 +1,12 @@
-import { Router } from "express";
-import { celebrate } from "celebrate";
-import validations from "./validations";
-import controller from './customer.controller'
-import middlewares from "../../middlewares";
+import { Router } from 'express';
+import { celebrate } from 'celebrate';
+import validations from './validations';
+import controller from './customer.controller';
+import middlewares from '../../middlewares';
 const route = Router();
 
 export default (app: any) => {
-  app.use("/customer", route);
+  app.use('/customer', route);
   /**
    * @swagger
    *  securityDefinitions:
@@ -45,12 +45,21 @@ export default (app: any) => {
    *         description: producecs a success response
    */
   route.post(
-    "/get-meta-data",
+    '/get-meta-data',
     middlewares.isAuth,
     middlewares.attachCurrentUser,
     celebrate({
       body: validations.metaData,
     }),
-    controller.getMetaData
+    controller.getMetaData,
+  );
+  route.post(
+    '/edit-details',
+    middlewares.isAuth,
+    middlewares.attachCurrentUser,
+    celebrate({
+      body: validations.editDetails,
+    }),
+    controller.editDetails,
   );
 };
