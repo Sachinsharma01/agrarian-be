@@ -5,7 +5,9 @@ export const ERROR_CODES = {
   AGVOTP_DEF: 'AGVOTP_DEF',
   AGVOTP: 'AGVOTP',
   AGED: 'AGED',
-  AGED_DEF: 'AGED_DEF'
+  AGED_DEF: 'AGED_DEF',
+  AGLP_DEF: 'AGLP_DEF',
+  AGLP: 'AGLP',
 };
 export const ERRORS_LIST = [
   {
@@ -42,5 +44,15 @@ export const ERRORS_LIST = [
     code: ERROR_CODES.AGED_DEF,
     description: 'Agrarian: Edit Details Default Error',
     message: 'Edit Details Default Error',
+  },
+  {
+    code: ERROR_CODES.AGLP_DEF,
+    description: 'Agrarian: List Posts Default Error',
+    message: 'List Posts Default Error',
+  },
+  {
+    code: ERROR_CODES.AGLP,
+    description: 'Agrarian: List Posts Error',
+    message: 'List Posts Default Error',
   },
 ];
