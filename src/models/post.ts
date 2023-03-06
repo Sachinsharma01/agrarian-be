@@ -27,6 +27,10 @@ const Post = new mongoose.Schema(
       type: [],
       default: [],
     },
+    state: {
+      type: String,
+      default: 'India'
+    },
     postedBy: {
       name: {
         type: String,
@@ -34,6 +38,9 @@ const Post = new mongoose.Schema(
       userId: {
         type: mongoose.Schema.Types.ObjectId,
       },
+      userImage: {
+        type: String
+      }
     },
     tags: {
       type: [],

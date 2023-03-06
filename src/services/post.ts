@@ -1,10 +1,15 @@
 import { Inject, Service } from 'typedi';
 import ErrorHandler from '../utility/errors';
 import { ERROR_CODES } from '../config/errors';
+import mongoose from 'mongoose';
 
 @Service()
 export default class PostService {
-  constructor(@Inject('postsModel') private postsModel: Models.PostsModel, @Inject('logger') private logger) {}
+  constructor(
+    @Inject('postsModel') private postsModel: Models.PostsModel,
+    @Inject('commentsModel') private commentsModel: Models.CommentsModel,
+    @Inject('logger') private logger,
+  ) {}
 
   public async listPosts(input: any) {
     try {
@@ -21,9 +26,9 @@ export default class PostService {
 
       const skip = limit * page;
 
-      input.query.userId ? dbQuery['posteBy.userId'] = input.query.userId : null;
-      input.query.name ? dbQuery['name'] = input.query.name : null;
-      input.query.cropName ? dbQuery['crop.cropName'] = input.query.cropName : null;
+      input.query.userId ? (dbQuery['postedBy.userId'] = input.query.userId) : null;
+      input.query.name ? (dbQuery['name'] = input.query.name) : null;
+      input.query.cropName ? (dbQuery['crop.cropName'] = input.query.cropName) : null;
 
       // dbQuery = {
       //   ...input.query,
@@ -40,6 +45,31 @@ export default class PostService {
       } else {
         this.logger.error('List posts service end with error %o', err);
         throw new ErrorHandler.BadError(ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGLP_DEF));
+      }
+    }
+  }
+
+  public async getPostDetails(input: { id: string }) {
+    try {
+      this.logger.debug('get post detail API start here %o', input);
+      const post = await this.postsModel.findOne({ _id: mongoose.Types.ObjectId(input.id) });
+      this.logger.info('post details response from DB %o', post);
+      const comments = await this.commentsModel.findOne({ postId: mongoose.Types.ObjectId(input.id) });
+      this.logger.info('post comments response from DB %o', comments);
+      if (!post) {
+        throw new ErrorHandler.BadError('The post you are looking for no longer exists!');
+      }
+      return {
+        post,
+        comments,
+      };
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        this.logger.error('post details and comment service fails with error %o', err);
+        throw new ErrorHandler.BadError(err.message);
+      } else {
+        this.logger.error('post details and comment service end with error %o', err);
+        throw new ErrorHandler.BadError(ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGPD_DEF));
       }
     }
   }

@@ -17,4 +17,10 @@ export default (app: any) => {
     }),
     controller.listPosts,
   );
+  route.get(
+    '/:id',
+    middlewares.isAuth,
+    middlewares.attachCurrentUser,
+    controller.getPostDetails
+  )
 };
