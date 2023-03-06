@@ -28,4 +28,22 @@ export default {
       }
     }
   },
+
+  getPostDetails: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      logger.info('Get post details API starts here %o', req.params);
+      const postServiceInstance = Container.get(PostService);
+      const response: any = await postServiceInstance.getPostDetails(req.params as {id: string});
+      logger.debug('get post details service response in controller %o', response);
+      return APIResponses.success(res, 'Posts details fetched successfully!', response);
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        logger.error('get post details API fails with error %o', err);
+        return APIResponses.badRequest(res, err.message, {});
+      } else {
+        logger.error('get post details API end with error %o', err);
+        return APIResponses.badRequest(res, ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGPD), {});
+      }
+    }
+  }
 };
