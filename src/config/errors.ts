@@ -10,6 +10,7 @@ export const ERROR_CODES = {
   AGLP: 'AGLP',
   AGPD_DEF: 'AGPD_DEF',
   AGPD: 'AGPD',
+  AGLC_DEF: 'AGLC_DEF',
 };
 export const ERRORS_LIST = [
   {
@@ -66,5 +67,10 @@ export const ERRORS_LIST = [
     code: ERROR_CODES.AGPD_DEF,
     description: 'Agrarian: Get Post Details Error',
     message: 'Get Post Details Default Error',
+  },
+  {
+    code: ERROR_CODES.AGLC_DEF,
+    description: 'Agrarian: Get All Crops Default Error',
+    message: 'Get All Crops Default Error',
   },
 ];
