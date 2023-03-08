@@ -54,7 +54,9 @@ export default class PostService {
       this.logger.debug('get post detail API start here %o', input);
       const post = await this.postsModel.findOne({ _id: mongoose.Types.ObjectId(input.id) });
       this.logger.info('post details response from DB %o', post);
-      const comments = await this.commentsModel.findOne({ postId: mongoose.Types.ObjectId(input.id) });
+      const comments = await this.commentsModel
+        .findOne({ postId: mongoose.Types.ObjectId(input.id) })
+        .sort({ _id: -1 });
       this.logger.info('post comments response from DB %o', comments);
       if (!post) {
         throw new ErrorHandler.BadError('The post you are looking for no longer exists!');
@@ -102,7 +104,9 @@ export default class PostService {
       } else {
         await this.commentsModel.updateOne({ postId: mongoose.Types.ObjectId(data.postId) }, { $push: { comments } });
       }
-      const comment = await this.commentsModel.findOne({ postId: mongoose.Types.ObjectId(data.postId) });
+      const comment = await this.commentsModel
+        .findOne({ postId: mongoose.Types.ObjectId(data.postId) })
+        .sort({ _id: -1 });
       this.logger.info('post comments response from DB %o', comments);
       return comment;
     } catch (err) {
