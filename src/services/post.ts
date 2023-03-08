@@ -52,8 +52,13 @@ export default class PostService {
   public async getPostDetails(input: { id: string }) {
     try {
       this.logger.debug('get post detail API start here %o', input);
-      const post = await this.postsModel.findOne({ _id: mongoose.Types.ObjectId(input.id) });
+      let post = await this.postsModel.findOne({ _id: mongoose.Types.ObjectId(input.id) });
       this.logger.info('post details response from DB %o', post);
+      await this.postsModel.updateOne({ _id: mongoose.Types.ObjectId(input.id) }, { views: post.views + 1 });
+
+      post = await this.postsModel.findOne({ _id: mongoose.Types.ObjectId(input.id) });
+      this.logger.info('post details response from DB %o', post);
+      
       const comments = await this.commentsModel
         .findOne({ postId: mongoose.Types.ObjectId(input.id) })
         .sort({ _id: -1 });
@@ -83,6 +88,9 @@ export default class PostService {
       const currentUser = input.currentUser;
       const isCommentExists = await this.commentsModel.findOne({ postId: data.postId });
       this.logger.debug('Comment exists in DB response %o', isCommentExists);
+      const postExists = await this.postsModel.findOne({ _id: mongoose.Types.ObjectId(data.postId) });
+      this.logger.debug('post exists in DB response %o', isCommentExists);
+
       const comments = [
         {
           commentedBy: {
@@ -104,6 +112,11 @@ export default class PostService {
       } else {
         await this.commentsModel.updateOne({ postId: mongoose.Types.ObjectId(data.postId) }, { $push: { comments } });
       }
+      const updatePost = {
+        totalAnswers: postExists.totalAnswers + 1,
+        views: postExists.views + 1,
+      };
+      await this.postsModel.updateOne({ _id: mongoose.Types.ObjectId(data.postId) }, { $set: updatePost });
       const comment = await this.commentsModel
         .findOne({ postId: mongoose.Types.ObjectId(data.postId) })
         .sort({ _id: -1 });
@@ -116,6 +129,39 @@ export default class PostService {
       } else {
         this.logger.error('post details and comment service end with error %o', err);
         throw new ErrorHandler.BadError(ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGPD_DEF));
+      }
+    }
+  }
+
+  public async addPost(input: { currentUser: any; body: any }) {
+    try {
+      this.logger.info('Add Post service starts here %o', input);
+      const data = input.body;
+      const currentUser = input.currentUser;
+      const dbQuery = {
+        postedBy: {
+          name: currentUser.name,
+          userImage: currentUser.image || null,
+          userId: currentUser._id,
+        },
+        crop: {
+          croName: data?.crop?.name,
+          cropId: data?.crop?.cropId,
+          cropImage: data?.crop?.image,
+        },
+        description: data.description,
+        image: data?.image || null,
+      };
+      const postAdded = await this.postsModel.create(dbQuery);
+      this.logger.debug('Post added in DB %o', postAdded);
+      return postAdded;
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        this.logger.error('List posts service fails with error %o', err);
+        throw new ErrorHandler.BadError(err.message);
+      } else {
+        this.logger.error('List posts service end with error %o', err);
+        throw new ErrorHandler.BadError('Add Post API Error');
       }
     }
   }

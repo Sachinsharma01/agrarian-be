@@ -29,7 +29,7 @@ const Post = new mongoose.Schema(
     },
     state: {
       type: String,
-      default: 'India'
+      default: 'India',
     },
     postedBy: {
       name: {
@@ -39,8 +39,8 @@ const Post = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
       },
       userImage: {
-        type: String
-      }
+        type: String,
+      },
     },
     tags: {
       type: [],
@@ -52,6 +52,10 @@ const Post = new mongoose.Schema(
       },
       cropId: {
         type: mongoose.Schema.Types.ObjectId,
+      },
+      cropImage: {
+        type: String,
+        default: '',
       },
     },
   },

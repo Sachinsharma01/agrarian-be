@@ -32,4 +32,13 @@ export default (app: any) => {
     }),
     controller.addComment
   )
+  route.post(
+    '/addPost',
+    middlewares.isAuth,
+    middlewares.attachCurrentUser,
+    celebrate({
+      body: validations.addPost
+    }),
+    controller.addPost
+  )
 };
