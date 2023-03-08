@@ -73,4 +73,46 @@ export default class PostService {
       }
     }
   }
+
+  public async addComment(input: any) {
+    try {
+      this.logger.info('Add comment service starts here %o', input);
+      const data = input.body;
+      const currentUser = input.currentUser;
+      const isCommentExists = await this.commentsModel.findOne({ postId: data.postId });
+      this.logger.debug('Comment exists in DB response %o', isCommentExists);
+      const comments = [
+        {
+          commentedBy: {
+            name: currentUser.name,
+            userId: currentUser._id,
+            image: currentUser.image || null,
+          },
+          comment: data.comment,
+          commentedOn: new Date().toISOString(),
+        },
+      ];
+      if (!isCommentExists) {
+        this.logger.info('Add comment is not exists %o', comments);
+        const dataObj = {
+          postId: mongoose.Types.ObjectId(data.postId),
+          comments: comments,
+        };
+        await this.commentsModel.create(dataObj);
+      } else {
+        await this.commentsModel.updateOne({ postId: mongoose.Types.ObjectId(data.postId) }, { $push: { comments } });
+      }
+      const comment = await this.commentsModel.findOne({ postId: mongoose.Types.ObjectId(data.postId) });
+      this.logger.info('post comments response from DB %o', comments);
+      return comment;
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        this.logger.error('post details and comment service fails with error %o', err);
+        throw new ErrorHandler.BadError(err.message);
+      } else {
+        this.logger.error('post details and comment service end with error %o', err);
+        throw new ErrorHandler.BadError(ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGPD_DEF));
+      }
+    }
+  }
 }

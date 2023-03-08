@@ -45,5 +45,27 @@ export default {
         return APIResponses.badRequest(res, ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGPD), {});
       }
     }
+  },
+
+  addComment: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      logger.info('Add comment API start here %o', req.body);
+      const input = {
+        currentUser: req.currentUser,
+        body: req.body
+      }
+      const postServiceInstance = Container.get(PostService);
+      const response: any = await postServiceInstance.addComment(input as any);
+      logger.debug('add comment service response in controller %o', response);
+      return APIResponses.success(res, 'Comment added successfully!', response);
+    } catch(err) {
+      if (err instanceof ErrorHandler.BadError) {
+        logger.error('get post details API fails with error %o', err);
+        return APIResponses.badRequest(res, err.message, {});
+      } else {
+        logger.error('get post details API end with error %o', err);
+        return APIResponses.badRequest(res, ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGPD), {});
+      }
+    }
   }
 };
