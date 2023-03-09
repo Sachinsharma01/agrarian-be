@@ -145,9 +145,9 @@ export default class PostService {
           userId: currentUser._id,
         },
         crop: {
-          croName: data?.crop?.name,
+          cropName: data?.crop?.cropName,
           cropId: data?.crop?.cropId,
-          cropImage: data?.crop?.image,
+          cropImage: data?.crop?.cropImage,
         },
         description: data.description,
         image: data?.image || null,
