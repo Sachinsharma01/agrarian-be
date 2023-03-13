@@ -71,4 +71,9 @@ export default {
     templateId: process.env.TWILIO_TWMPLATE_ID,
     twilioAuthToken: process.env.TWILIO_AUTH_TOKEN,
   },
+  aws: {
+    accessKey: process.env.AWS_ACCESS_KEY,
+    secretKey: process.env.AWS_SECRET_KEY,
+    region: process.env.AWS_REGION,
+  },
 };

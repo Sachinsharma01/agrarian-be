@@ -11,6 +11,7 @@ import ErrorHandler from '../utility/errors';
 import { ERROR_CODES } from '../config/errors';
 import twilioService from './twilio';
 import { status } from '../config/constants';
+import { SMS } from './sms';
 
 @Service()
 export default class AuthService {
@@ -134,15 +135,25 @@ export default class AuthService {
       this.logger.info('Generate OTP Service Starts here %o', input);
       const user: any = await this.userModel.findOne({ phone: input.phone });
       this.logger.info('user exists db response %o', user);
+      const OTP = Math.floor(100000 + Math.random() * 900000);
+      this.logger.info('OTP %o', OTP);
       if (!user) {
         const addUser = await this.userModel.create({
           phone: input.phone,
         });
         this.logger.debug('Add user %o', addUser);
       }
-      const twilioServiceInstance = Container.get(twilioService);
-      const response = await twilioServiceInstance.generateOtp(input.phone as string);
-      this.logger.info('Generate OTP Twilio response in generate otp service %o', response);
+      await this.userModel.updateOne(
+        { phone: input.phone },
+        {
+          $set: {
+            otp: OTP,
+          },
+        },
+      );
+      const smsServiceInstance = Container.get(SMS);
+      const response = await smsServiceInstance.sendSMS({ phone: input.phone, otp: OTP } as any);
+      this.logger.info('Generate OTP AWS response in generate otp service %o', response);
       return response;
     } catch (err) {
       if (err instanceof ErrorHandler.BadError) {
@@ -157,14 +168,14 @@ export default class AuthService {
   public async verifyOtp(input: any) {
     try {
       this.logger.info('verify otp service starts here %o', input);
-      const twilioServiceInstance = Container.get(twilioService);
-      const twilioResponse = await twilioServiceInstance.verifyOtp(input);
+      // const twilioServiceInstance = Container.get(twilioService);
+      // const twilioResponse = await twilioServiceInstance.verifyOtp(input);
       let response = {};
-      const user = await this.userModel.findOne({ phone: input.phone });
+      const user: any = await this.userModel.findOne({ phone: input.phone });
       this.logger.debug('user db response in verify otp service %o', user);
       const token = this.generateToken(user);
       this.logger.info('Token response in verify otp %o', token);
-      if (twilioResponse.status === status.approved) {
+      if (user.otp === +input.otp) {
         response = {
           status: 'Approved',
           token: token,
