@@ -35,7 +35,7 @@ export default class PostService {
       // };
       this.logger.info('list posts db query %o', dbQuery);
 
-      const posts = await this.postsModel.find(dbQuery).skip(skip).limit(limit);
+      const posts = await this.postsModel.find(dbQuery).sort({_id : -1}).skip(skip).limit(limit);
       this.logger.debug('list posts response from db %o', posts);
       return posts;
     } catch (err) {
