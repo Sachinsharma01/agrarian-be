@@ -33,7 +33,7 @@ export default {
     try {
       logger.info('Get post details API starts here %o', req.params);
       const postServiceInstance = Container.get(PostService);
-      const response: any = await postServiceInstance.getPostDetails(req.params as {id: string});
+      const response: any = await postServiceInstance.getPostDetails(req.params as { id: string });
       logger.debug('get post details service response in controller %o', response);
       return APIResponses.success(res, 'Posts details fetched successfully!', response);
     } catch (err) {
@@ -45,5 +45,49 @@ export default {
         return APIResponses.badRequest(res, ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGPD), {});
       }
     }
-  }
+  },
+
+  addComment: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      logger.info('Add comment API start here %o', req.body);
+      const input = {
+        currentUser: req.currentUser,
+        body: req.body,
+      };
+      const postServiceInstance = Container.get(PostService);
+      const response: any = await postServiceInstance.addComment(input as any);
+      logger.debug('add comment service response in controller %o', response);
+      return APIResponses.success(res, 'Comment added successfully!', response);
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        logger.error('get post details API fails with error %o', err);
+        return APIResponses.badRequest(res, err.message, {});
+      } else {
+        logger.error('get post details API end with error %o', err);
+        return APIResponses.badRequest(res, ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGPD), {});
+      }
+    }
+  },
+
+  addPost: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      logger.info('Add post API starts here %o', req.body);
+      const input = {
+        currentUser: req.currentUser,
+        body: req.body,
+      };
+      const postServiceInstance = Container.get(PostService);
+      const response: any = await postServiceInstance.addPost(input as any);
+      logger.info('Add Post response in controller %o', response);
+      return APIResponses.success(res, 'Post added successfully!', response);
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        logger.error('get post details API fails with error %o', err);
+        return APIResponses.badRequest(res, err.message, {});
+      } else {
+        logger.error('get post details API end with error %o', err);
+        return APIResponses.badRequest(res, ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGPD), {});
+      }
+    }
+  },
 };

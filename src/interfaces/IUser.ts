@@ -1,11 +1,10 @@
 export interface IUser {
   _id: string;
-  username: string;
+  name: string;
   email: string;
   password: string;
   salt: string;
-  quizes: [];
-  totalQuizes: number;
+  image: string;
 }
 
 export interface IUserInputDTO {
