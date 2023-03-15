@@ -1,5 +1,5 @@
 import middlewares from '../../middlewares';
-import { Router } from 'express';
+import { Response, Router } from 'express';
 import { celebrate } from 'celebrate';
 import validations from './validations';
 import controller from './auth.controller';
@@ -20,5 +20,11 @@ export default (app: any) => {
       body: validations.verifyOtp,
     }),
     controller.verifyOtp,
+  );
+  route.get(
+    '/test',
+    ((req:any, res:Response) => {
+      res.status(200).json({message: 'I am Working'})
+    })
   );
 };
