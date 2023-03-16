@@ -71,4 +71,9 @@ export default {
     templateId: process.env.TWILIO_TWMPLATE_ID,
     twilioAuthToken: process.env.TWILIO_AUTH_TOKEN,
   },
+
+  weather: {
+    api: process.env.WEATHER_API,
+    apiKey: process.env.WEATHER_API_KEY,
+  }
 };
