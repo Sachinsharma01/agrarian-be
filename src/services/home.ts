@@ -12,10 +12,10 @@ export class HomeService {
       this.logger.info('Weather Service starts here %o', input);
       const reqObj = {
         method: 'GET',
-        url: 'https://weatherapi-com.p.rapidapi.com/forecast.json',
+        url: config.weather.api,
         params: { q: `${input.lat},${input.long}`, days: '3' },
         headers: {
-          'X-RapidAPI-Key': '2fe36f8ff0mshf8cd7ea61c02766p18e60bjsn34938ab8983d',
+          'X-RapidAPI-Key': config.weather.apiKey,
           'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
         },
       };

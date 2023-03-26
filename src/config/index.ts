@@ -75,5 +75,11 @@ export default {
   weather: {
     api: process.env.WEATHER_API,
     apiKey: process.env.WEATHER_API_KEY,
-  }
+  },
+
+  aws: {
+    accessKey: process.env.AWS_ACCESS_KEY,
+    awsSecret: process.env.AWS_SECRET_KEY,
+    region: process.env.AWS_REGION
+  },
 };

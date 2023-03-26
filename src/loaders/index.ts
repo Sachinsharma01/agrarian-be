@@ -39,6 +39,16 @@ export default async ({ expressApp }) => {
     model: require('../models/crop').default
   }
 
+  const userCropsModel = {
+    name: 'userCropsModel',
+    model: require('../models/userCrops').default
+  }
+
+  const cropDetailsModel = {
+    name: 'cropDetailsModel',
+    model: require('../models/cropdetails').default
+  }
+
   // It returns the agenda instance because it's needed in the subsequent loaders
   const { agenda } = await dependencyInjectorLoader({
     mongoConnection,
@@ -46,7 +56,9 @@ export default async ({ expressApp }) => {
       userModel,
       postsModel,
       commentsModel,
-      cropsModel
+      cropsModel,
+      userCropsModel,
+      cropDetailsModel
       // salaryModel,
       // whateverModel
     ],
