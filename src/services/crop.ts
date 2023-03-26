@@ -34,7 +34,7 @@ export default class CropService {
     try {
       this.logger.info('get all users crops starts here %o', input);
       const cropsResponse = await this.userCropsModel.find({ userId: mongoose.Types.ObjectId(input.userId) });
-      await this.userCropsModel.create({ userId: mongoose.Types.ObjectId(input.userId) });
+      // await this.userCropsModel.create({ userId: mongoose.Types.ObjectId(input.userId) });
       this.logger.info('all user crops response from DB %o', cropsResponse);
       return cropsResponse;
     } catch (err) {
