@@ -3,4 +3,18 @@ export default {
   getUserCrops: Joi.object().keys({
     userId: Joi.string().required(),
   }),
+  addCrop: Joi.object().keys({
+    userId: Joi.string().required(),
+    crop: Joi.object()
+      .keys({
+        name: Joi.string().required(),
+        image: Joi.string().required(),
+        _id: Joi.string().required(),
+      })
+      .required(),
+  }),
+  removeCrop: Joi.object().keys({
+    userId: Joi.string().required(),
+    cropId: Joi.string().required(),
+  }),
 };

@@ -3,6 +3,7 @@ import ErrorHandler from '../utility/errors';
 import S3 from '../utility/s3';
 import mongoose from 'mongoose';
 import { ERROR_CODES } from '../config/errors';
+import { update } from 'lodash';
 
 @Service()
 export default class CropService {
@@ -63,6 +64,81 @@ export default class CropService {
       } else {
         this.logger.error('crop details service end with error %o', err);
         throw new ErrorHandler.BadError('crop details default error');
+      }
+    }
+  }
+
+  public async addCrop(input: { userId: string; crop: any }) {
+    try {
+      this.logger.info('Add Crop Service starts here %o', input);
+      let query = {
+        userId: mongoose.Types.ObjectId(input.userId),
+        crop: [
+          {
+            name: input.crop.name,
+            image: input.crop.image,
+            _id: mongoose.Types.ObjectId(input.crop._id),
+          },
+        ],
+      };
+      this.logger.info('user crop added query %o', query);
+      const cropsExists = await this.userCropsModel.findOne({ userId: mongoose.Types.ObjectId(input.userId) });
+      if (!cropsExists) {
+        const userCropAdded = await this.userCropsModel.create(query);
+        this.logger.info('user crops added in DB %o', userCropAdded);
+        return userCropAdded;
+      }
+      let crop = [
+        {
+          name: input.crop.name,
+          image: input.crop.image,
+          _id: mongoose.Types.ObjectId(input.crop._id),
+        },
+      ];
+      const cropAdded = await this.userCropsModel.updateOne(
+        { userId: mongoose.Types.ObjectId(input.userId) },
+        { $push: { crop } },
+      );
+      const finalCrops = await this.userCropsModel.findOne({ userId: mongoose.Types.ObjectId(input.userId) });
+      this.logger.info('Final Updated Crops %o', finalCrops);
+      return finalCrops;
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        this.logger.error('Add crop service fails with error %o', err);
+        throw new ErrorHandler.BadError(err.message);
+      } else {
+        this.logger.error('Add crop service end with error %o', err);
+        throw new ErrorHandler.BadError('add crop default error');
+      }
+    }
+  }
+
+  public async removeCrop(input: { cropId: string; userId: string }) {
+    try {
+      this.logger.info('Remove Crop service starts here %o', input);
+      let crop = {
+        _id: mongoose.Types.ObjectId(input.cropId),
+      };
+      this.logger.info('Query to remove crop %o', crop);
+      const crops: any = await this.userCropsModel.findOne({ userId: mongoose.Types.ObjectId(input.userId) });
+      let updated = crops?.crop?.filter(cr => {
+        return cr._id != input.cropId;
+      });
+      this.logger.debug('Filtered Crops %o', updated);
+      await this.userCropsModel.updateOne(
+        { userId: mongoose.Types.ObjectId(input.userId) },
+        { $set: { crop: updated } },
+      );
+      const finalCrops = await this.userCropsModel.findOne({ userId: mongoose.Types.ObjectId(input.userId) });
+      this.logger.info('Final crops after removed %o', finalCrops);
+      return finalCrops;
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        this.logger.error('remove crop service fails with error %o', err);
+        throw new ErrorHandler.BadError(err.message);
+      } else {
+        this.logger.error('remove crop service end with error %o', err);
+        throw new ErrorHandler.BadError('remove crp[] default error');
       }
     }
   }

@@ -10,6 +10,7 @@ export default (app: any) => {
   app.use('/crops', route);
 
   route.get('/', middlewares.isAuth, middlewares.attachCurrentUser, controller.getAllCrops);
+
   route.get(
     '/user',
     middlewares.isAuth,
@@ -19,5 +20,26 @@ export default (app: any) => {
     }),
     controller.getUserCrops,
   );
+
   route.get('/:id', middlewares.isAuth, middlewares.attachCurrentUser, controller.cropDetails);
+
+  route.post(
+    '/add',
+    middlewares.isAuth,
+    middlewares.attachCurrentUser,
+    celebrate({
+      body: validations.addCrop,
+    }),
+    controller.addCrop,
+  );
+
+  route.post(
+    '/remove',
+    middlewares.isAuth,
+    middlewares.attachCurrentUser,
+    celebrate({
+      body: validations.removeCrop,
+    }),
+    controller.removeCrop,
+  );
 };

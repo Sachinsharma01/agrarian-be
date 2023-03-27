@@ -11,3 +11,11 @@ interface ICrop {
   key: string;
   pdf: string;
 }
+
+export interface IAddCropDTO {
+  userId: string;
+  crop: {
+    name: string;
+    image: string;
+  };
+}

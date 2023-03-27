@@ -5,6 +5,7 @@ import CropService from '../../../services/crop';
 import APIResponses from '../../../utility/response';
 import ErrorHandler from '../../../utility/errors';
 import { ERROR_CODES } from '../../../config/errors';
+import { IAddCropDTO } from '../../../interfaces/IUserCrops';
 
 export default {
   getAllCrops: async (req: Request, res: Response, next: NextFunction) => {
@@ -57,6 +58,52 @@ export default {
       } else {
         logger.error('crop details API end with error %o', err);
         throw new ErrorHandler.BadError('Get all users crops default error');
+      }
+    }
+  },
+
+  addCrop: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      logger.info('add user crops API starts here %o', req.body);
+      const cropServiceInstance = Container.get(CropService);
+      const payload = {
+        userId: req.body.userId,
+        crop: {
+          ...req.body.crop,
+        },
+      };
+      const response = await cropServiceInstance.addCrop(payload as IAddCropDTO);
+      logger.info('Add Crop Service response in Controller %o', response);
+      return APIResponses.success(res, 'Crop details added successfully', response);
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        logger.error('add crop API fails with error %o', err);
+        throw new ErrorHandler.BadError(err.message);
+      } else {
+        logger.error('add crop API end with error %o', err);
+        throw new ErrorHandler.BadError('add uses crop default error');
+      }
+    }
+  },
+
+  removeCrop: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      logger.info('Remove Crop API starts here %o', req.body);
+      let query = {
+        userId: req.body.userId,
+        cropId: req.body.cropId,
+      };
+      const cropServiceInstance = Container.get(CropService);
+      const response = await cropServiceInstance.removeCrop(query);
+      logger.info('Remove crop service response in Controller %o', response);
+      return APIResponses.success(res, 'crop removed successfully', response);
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        logger.error('remove crop API fails with error %o', err);
+        throw new ErrorHandler.BadError(err.message);
+      } else {
+        logger.error('remove crop API end with error %o', err);
+        throw new ErrorHandler.BadError('remove uses crop default error');
       }
     }
   },
