@@ -9,6 +9,10 @@ const Crop = new mongoose.Schema(
       type: String,
       default: '',
     },
+    totalWeeks: {
+      type: Number,
+      default: 2
+    }
   },
   { timestamps: true },
 );

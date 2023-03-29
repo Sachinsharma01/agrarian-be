@@ -1,9 +1,10 @@
 import { Inject, Service } from 'typedi';
+import mongoose from 'mongoose';
+import moment from 'moment';
 import ErrorHandler from '../utility/errors';
 import S3 from '../utility/s3';
-import mongoose from 'mongoose';
 import { ERROR_CODES } from '../config/errors';
-import { update } from 'lodash';
+import { IAddCropDTO } from '../interfaces/IUserCrops';
 
 @Service()
 export default class CropService {
@@ -34,9 +35,21 @@ export default class CropService {
   public async getAllUserCrops(input: { userId: string }) {
     try {
       this.logger.info('get all users crops starts here %o', input);
-      const cropsResponse = await this.userCropsModel.find({ userId: mongoose.Types.ObjectId(input.userId) });
+      const cropsResponse: any = await this.userCropsModel.find({ userId: mongoose.Types.ObjectId(input.userId) });
       // await this.userCropsModel.create({ userId: mongoose.Types.ObjectId(input.userId) });
-      this.logger.info('all user crops response from DB %o', cropsResponse);
+      this.logger.info('all user crops response from DB Before Modification %o', cropsResponse);
+      cropsResponse[0]?.crop.map((crop: any, idx: number) => {
+        let currentDate = moment(new Date());
+        let sowingDate = moment(new Date(crop.sowingDate));
+        let differenceInDays = currentDate.diff(sowingDate, 'days');
+        const cropTotalTenureInDays = crop.totalWeeks * 7;
+        const progress: number = differenceInDays / cropTotalTenureInDays;
+        const currentWeek: number = parseInt(differenceInDays / 7 + '');
+        (crop.progress = progress), (crop.currentWeek = currentWeek);
+      });
+
+      this.logger.info('all user crops response from DB After Modification %o', cropsResponse);
+
       return cropsResponse;
     } catch (err) {
       if (err instanceof ErrorHandler.BadError) {
@@ -68,20 +81,45 @@ export default class CropService {
     }
   }
 
-  public async addCrop(input: { userId: string; crop: any }) {
+  public async addCrop(input: IAddCropDTO) {
     try {
       this.logger.info('Add Crop Service starts here %o', input);
-      let query = {
+      let query: any = {
         userId: mongoose.Types.ObjectId(input.userId),
         crop: [
           {
             name: input.crop.name,
             image: input.crop.image,
             _id: mongoose.Types.ObjectId(input.crop._id),
+            totalWeeks: input.crop.totalWeeks,
           },
         ],
       };
+      input.area ? (query.crop[0].area = input.area) : null;
+      input.sowingDate ? (query.crop[0].sowingDate = input.sowingDate) : null;
       this.logger.info('user crop added query %o', query);
+      let currentDate = moment(new Date());
+      let sowingDate = moment(new Date(input.sowingDate));
+      if (currentDate < sowingDate) {
+        throw new ErrorHandler.BadError('Invalid Date');
+      }
+
+      let differenceInDays = currentDate.diff(sowingDate, 'days');
+      const cropTotalTenureInDays = input.crop.totalWeeks * 7;
+      const progress: number = differenceInDays / cropTotalTenureInDays;
+      const currentWeek: number = parseInt(differenceInDays / 7 + '');
+      query.progress = progress;
+      query.currentWeek = currentWeek;
+
+      this.logger.debug(
+        `tenure : ${cropTotalTenureInDays} progress : ${progress} currentWeek : ${currentWeek} difference : ${differenceInDays}`,
+      );
+
+      if (currentWeek > input.crop.totalWeeks) {
+        query.query.crop[0] = input.crop.totalWeeks;
+        query.query.crop[0] = 1;
+      }
+
       const cropsExists = await this.userCropsModel.findOne({ userId: mongoose.Types.ObjectId(input.userId) });
       if (!cropsExists) {
         const userCropAdded = await this.userCropsModel.create(query);
@@ -93,6 +131,11 @@ export default class CropService {
           name: input.crop.name,
           image: input.crop.image,
           _id: mongoose.Types.ObjectId(input.crop._id),
+          totalWeeks: input.crop.totalWeeks,
+          progress: progress,
+          currentWeek: currentWeek,
+          sowingDate: input.sowingDate,
+          area: input.area || 0,
         },
       ];
       const cropAdded = await this.userCropsModel.updateOne(

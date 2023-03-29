@@ -10,8 +10,11 @@ export default {
         name: Joi.string().required(),
         image: Joi.string().required(),
         _id: Joi.string().required(),
+        totalWeeks: Joi.number().required(),
       })
       .required(),
+    sowingDate: Joi.string().optional(),
+    area: Joi.number().optional(),
   }),
   removeCrop: Joi.object().keys({
     userId: Joi.string().required(),

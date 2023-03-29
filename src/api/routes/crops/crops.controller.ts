@@ -18,10 +18,10 @@ export default {
     } catch (err) {
       if (err instanceof ErrorHandler.BadError) {
         logger.error('List crops API fails with error %o', err);
-        throw new ErrorHandler.BadError(err.message);
+        return APIResponses.badRequest(res, err.message, {});
       } else {
         logger.error('List crops API end with error %o', err);
-        throw new ErrorHandler.BadError(ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGLC_DEF));
+        return APIResponses.badRequest(res, ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGLC_DEF), {});
       }
     }
   },
@@ -36,10 +36,10 @@ export default {
     } catch (err) {
       if (err instanceof ErrorHandler.BadError) {
         logger.error('List users crops API fails with error %o', err);
-        throw new ErrorHandler.BadError(err.message);
+        return APIResponses.badRequest(res, err.message, {});
       } else {
         logger.error('List users crops API end with error %o', err);
-        throw new ErrorHandler.BadError('Get all users crops default error');
+        return APIResponses.badRequest(res, 'Get all users crops default error', {});
       }
     }
   },
@@ -54,10 +54,10 @@ export default {
     } catch (err) {
       if (err instanceof ErrorHandler.BadError) {
         logger.error('crop details API fails with error %o', err);
-        throw new ErrorHandler.BadError(err.message);
+        return APIResponses.badRequest(res, err.message, {});
       } else {
         logger.error('crop details API end with error %o', err);
-        throw new ErrorHandler.BadError('Get all users crops default error');
+        return APIResponses.badRequest(res, 'Get all users crops default error', {});
       }
     }
   },
@@ -71,6 +71,8 @@ export default {
         crop: {
           ...req.body.crop,
         },
+        sowingDate: req.body.sowingDate,
+        area: req.body.area,
       };
       const response = await cropServiceInstance.addCrop(payload as IAddCropDTO);
       logger.info('Add Crop Service response in Controller %o', response);
@@ -78,10 +80,10 @@ export default {
     } catch (err) {
       if (err instanceof ErrorHandler.BadError) {
         logger.error('add crop API fails with error %o', err);
-        throw new ErrorHandler.BadError(err.message);
+        return APIResponses.badRequest(res, err.message, {});
       } else {
         logger.error('add crop API end with error %o', err);
-        throw new ErrorHandler.BadError('add uses crop default error');
+        return APIResponses.badRequest(res,'add user crop default error', {});
       }
     }
   },
@@ -103,7 +105,7 @@ export default {
         throw new ErrorHandler.BadError(err.message);
       } else {
         logger.error('remove crop API end with error %o', err);
-        throw new ErrorHandler.BadError('remove uses crop default error');
+        return APIResponses.badRequest(res, 'remove uses crop default error', {});
       }
     }
   },

@@ -10,6 +10,10 @@ interface ICrop {
   image: string;
   key: string;
   pdf: string;
+  area?: number;
+  sowingDate: string;
+  currentWeek: number;
+  progress: number;
 }
 
 export interface IAddCropDTO {
@@ -17,5 +21,9 @@ export interface IAddCropDTO {
   crop: {
     name: string;
     image: string;
+    _id: string;
+    totalWeeks: number;
   };
+  sowingDate: string;
+  area?: number;
 }
