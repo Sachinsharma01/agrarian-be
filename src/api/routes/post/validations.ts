@@ -19,4 +19,7 @@ export default {
     }).required(),
     image: Joi.string().optional(),
   }),
+  updatePost: Joi.object().keys({
+    postId: Joi.string().required(),
+  })
 };

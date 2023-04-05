@@ -35,7 +35,7 @@ export default class PostService {
       // };
       this.logger.info('list posts db query %o', dbQuery);
 
-      const posts = await this.postsModel.find(dbQuery).sort({_id : -1}).skip(skip).limit(limit);
+      const posts = await this.postsModel.find(dbQuery).sort({ _id: -1 }).skip(skip).limit(limit);
       this.logger.debug('list posts response from db %o', posts);
       return posts;
     } catch (err) {
@@ -58,7 +58,7 @@ export default class PostService {
 
       post = await this.postsModel.findOne({ _id: mongoose.Types.ObjectId(input.id) });
       this.logger.info('post details response from DB %o', post);
-      
+
       const comments = await this.commentsModel
         .findOne({ postId: mongoose.Types.ObjectId(input.id) })
         .sort({ _id: -1 });
@@ -164,5 +164,20 @@ export default class PostService {
         throw new ErrorHandler.BadError('Add Post API Error');
       }
     }
+  }
+
+  public async updatePost(input: { postId: string; query: any }) {
+    try {
+      this.logger.info('Update Post Service starts here %o %o', input.postId, input.query);
+      const post = await this.postsModel.findOne({ _id: mongoose.Types.ObjectId(input.postId) });
+      let dbQuery: { likes?: number } = {};
+      if (input.query.hasOwnProperty('like')) {
+        dbQuery.likes = post.likes + 1;
+      }
+      await this.postsModel.updateOne({ _id: mongoose.Types.ObjectId(input.postId) }, { $set: dbQuery });
+      return {
+        ...input.query
+      }
+    } catch (err) {}
   }
 }

@@ -90,4 +90,25 @@ export default {
       }
     }
   },
+  updatePost: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      logger.debug('Update Post API start here %o %o', req.query, req.params);
+      const input = {
+        postId: req.params.postId,
+        query: req.query,
+      };
+      const postServiceInstance = Container.get(PostService);
+      const response:any = await postServiceInstance.updatePost(input as any);
+      logger.info('Update Post response in controller %o', response);
+      return APIResponses.success(res, 'Post Updated successfully!', response);
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        logger.error('update post details API fails with error %o', err);
+        return APIResponses.badRequest(res, err.message, {});
+      } else {
+        logger.error('update post details API end with error %o', err);
+        return APIResponses.badRequest(res, ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGUP), {});
+      }
+    }
+  },
 };

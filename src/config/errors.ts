@@ -11,6 +11,7 @@ export const ERROR_CODES = {
   AGPD_DEF: 'AGPD_DEF',
   AGPD: 'AGPD',
   AGLC_DEF: 'AGLC_DEF',
+  AGUP: 'AGUP',
 };
 export const ERRORS_LIST = [
   {
@@ -72,5 +73,10 @@ export const ERRORS_LIST = [
     code: ERROR_CODES.AGLC_DEF,
     description: 'Agrarian: Get All Crops Default Error',
     message: 'Get All Crops Default Error',
+  },
+  {
+    code: ERROR_CODES.AGUP,
+    description: 'Agrarian: Update Post Error',
+    message: 'Update Post Error',
   },
 ];

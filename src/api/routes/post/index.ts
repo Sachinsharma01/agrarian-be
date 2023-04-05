@@ -40,5 +40,11 @@ export default (app: any) => {
       body: validations.addPost
     }),
     controller.addPost
+  ),
+  route.put(
+    '/updatePost/:postId',
+    middlewares.isAuth,
+    middlewares.attachCurrentUser,
+    controller.updatePost
   )
 };
