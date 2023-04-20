@@ -45,7 +45,8 @@ export default class CropService {
         const cropTotalTenureInDays = crop.totalWeeks * 7;
         const progress: number = differenceInDays / cropTotalTenureInDays;
         const currentWeek: number = parseInt(differenceInDays / 7 + '');
-        (crop.progress = progress), (crop.currentWeek = currentWeek);
+        (crop.progress = progress <= 1 ? progress : 1),
+        (crop.currentWeek = currentWeek <= crop.totalWeeks ? currentWeek : crop.totalWeeks);
       });
 
       this.logger.info('all user crops response from DB After Modification %o', cropsResponse);
