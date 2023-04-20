@@ -68,9 +68,9 @@ export default class CropService {
       this.logger.info('Crop details Service starts here %o', input);
       const response: any = await this.cropDetailsModel.findOne({ cropId: mongoose.Types.ObjectId(input.cropId) });
       this.logger.info('Crops Data Response from DB %o', response);
-      const file = await S3.signedUrl(response.key);
-      this.logger.info('File response from crop details DB %o', file);
-      return file;
+      // const file = await S3.signedUrl(response.key);
+      this.logger.info('File response from crop details DB %o', response);
+      return response;
     } catch (err) {
       if (err instanceof ErrorHandler.BadError) {
         this.logger.error('crop details service fails with error %o', err);
