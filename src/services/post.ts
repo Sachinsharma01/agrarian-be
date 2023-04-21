@@ -97,6 +97,7 @@ export default class PostService {
             name: currentUser.name,
             userId: currentUser._id,
             image: currentUser.image || null,
+            isPaid: currentUser?.isPaid
           },
           comment: data.comment,
           commentedOn: new Date().toISOString(),
@@ -143,6 +144,7 @@ export default class PostService {
           name: currentUser.name,
           userImage: currentUser.image || null,
           userId: currentUser._id,
+          isPaid: currentUser?.isPaid
         },
         crop: {
           cropName: data?.crop?.cropName,

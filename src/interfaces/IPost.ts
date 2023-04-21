@@ -15,4 +15,6 @@ export interface IPost {
 interface IPostedBy {
     name: String;
     userId: any;
+    userImage: string;
+    isPaid: boolean;
 }

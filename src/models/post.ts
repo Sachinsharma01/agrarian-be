@@ -41,6 +41,10 @@ const Post = new mongoose.Schema(
       userImage: {
         type: String,
       },
+      isPaid: {
+        type: Boolean,
+        default: false,
+      }
     },
     tags: {
       type: [],
