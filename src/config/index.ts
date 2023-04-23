@@ -82,4 +82,7 @@ export default {
     awsSecret: process.env.AWS_SECRET_KEY,
     region: process.env.AWS_REGION
   },
+  fast2sms: {
+    apiKey: process.env.FAST2SMS_API
+  }
 };

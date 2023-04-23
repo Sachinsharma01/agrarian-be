@@ -12,6 +12,8 @@ import { ERROR_CODES } from '../config/errors';
 import twilioService from './twilio';
 import { status } from '../config/constants';
 
+const fast2sms = require('fast-two-sms');
+
 @Service()
 export default class AuthService {
   constructor(
@@ -134,14 +136,25 @@ export default class AuthService {
       this.logger.info('Generate OTP Service Starts here %o', input);
       const user: any = await this.userModel.findOne({ phone: input.phone });
       this.logger.info('user exists db response %o', user);
+      const staticOTP = Math.floor(100000 + Math.random() * 900000);
+      this.logger.info('Static OTP is %o', staticOTP);
       if (!user) {
         const addUser = await this.userModel.create({
           phone: input.phone,
         });
         this.logger.debug('Add user %o', addUser);
       }
+      await this.userModel.updateOne({ phone: input.phone }, { otp: staticOTP });
       const twilioServiceInstance = Container.get(twilioService);
-      const response = await twilioServiceInstance.generateOtp(input.phone as string);
+      // const response = await twilioServiceInstance.generateOtp(input.phone as string);
+      const message = `Your Agrarian verification code is: ${staticOTP}. Please do not share this code.`;
+      const phone = input.phone.substring(3);
+      this.logger.debug('Message is %o and phone number %o', message, phone);
+      const response = await fast2sms.sendMessage({
+        authorization: config.fast2sms.apiKey,
+        message: message,
+        numbers: [phone],
+      });
       this.logger.info('Generate OTP Twilio response in generate otp service %o', response);
       return response;
     } catch (err) {
@@ -157,19 +170,26 @@ export default class AuthService {
   public async verifyOtp(input: any) {
     try {
       this.logger.info('verify otp service starts here %o', input);
-      const twilioServiceInstance = Container.get(twilioService);
-      const twilioResponse = await twilioServiceInstance.verifyOtp(input);
+      // const twilioServiceInstance = Container.get(twilioService);
+      // const twilioResponse = await twilioServiceInstance.verifyOtp(input);
       let response = {};
-      const user = await this.userModel.findOne({ phone: input.phone });
+      const user: any = await this.userModel.findOne({ phone: input.phone });
       this.logger.debug('user db response in verify otp service %o', user);
       const token = this.generateToken(user);
       this.logger.info('Token response in verify otp %o', token);
-      if (twilioResponse.status === status.approved) {
+      //! for the time being we are disabling twilio
+      // if (twilioResponse.status === status.approved) {
+      //   response = {
+      //     status: 'Approved',
+      //     token: token, 
+      //   };
+      if (user?.otp === parseInt(input.otp, 10)) {
         response = {
           status: 'Approved',
           token: token,
         };
       } else {
+        // this.logger.error("OOPS! Error in verify otp service %o", error)
         throw new ErrorHandler.BadError('OOPS! Something went wrong please try again later.');
       }
       this.logger.debug('Response object in verify otp service %o', response);
