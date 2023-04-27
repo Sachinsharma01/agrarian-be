@@ -10,7 +10,7 @@ import events from '../subscribers/events';
 import ErrorHandler from '../utility/errors';
 import { ERROR_CODES } from '../config/errors';
 import twilioService from './twilio';
-import { status } from '../config/constants';
+import axios from 'axios';
 
 const fast2sms = require('fast-two-sms');
 
@@ -146,17 +146,31 @@ export default class AuthService {
       }
       await this.userModel.updateOne({ phone: input.phone }, { otp: staticOTP });
       const twilioServiceInstance = Container.get(twilioService);
+      //! for the time being we are disabling twilio
       // const response = await twilioServiceInstance.generateOtp(input.phone as string);
       const message = `Your Agrarian verification code is: ${staticOTP}. Please do not share this code.`;
       const phone = input.phone.substring(3);
       this.logger.debug('Message is %o and phone number %o', message, phone);
-      const response = await fast2sms.sendMessage({
-        authorization: config.fast2sms.apiKey,
-        message: message,
-        numbers: [phone],
-      });
-      this.logger.info('Generate OTP Twilio response in generate otp service %o', response);
-      return response;
+      //! for the time being we are disabling fast2sms without DLT service
+      const axiosReqObj = {
+        url: `https://www.fast2sms.com/dev/bulkV2?authorization=${config.fast2sms.apiKey}&variables_values=${staticOTP}&route=otp&numbers=${phone}`,
+        method: 'GET',
+      };
+      this.logger.debug('Axios obj for req deliver fast2sms API %o', axiosReqObj);
+      const response: any = await axios(axiosReqObj);
+      // const data: any = JSON.stringify(response);
+      // const response = await fast2sms.sendMessage({
+      //   authorization: config.fast2sms.apiKey,
+      //   message: message,
+      //   numbers: [phone],
+      // });
+      // this.logger.info('Generate OTP Twilio response in generate otp service %o', response);
+      this.logger.info('Generate OTP fast2sms response in generate otp service %o');
+      return {
+        message: "message sent successfully1",
+        otp: staticOTP
+      };
+      // throw new ErrorHandler.BadError('Error ocurred in sending the OTP ');
     } catch (err) {
       if (err instanceof ErrorHandler.BadError) {
         this.logger.error('Generate Otp service fails with error %o', err);
@@ -181,7 +195,7 @@ export default class AuthService {
       // if (twilioResponse.status === status.approved) {
       //   response = {
       //     status: 'Approved',
-      //     token: token, 
+      //     token: token,
       //   };
       if (user?.otp === parseInt(input.otp, 10)) {
         response = {
