@@ -1,10 +1,9 @@
-import { Inject, Service } from 'typedi';
+import { Inject, Service, Container } from 'typedi';
 import mongoose from 'mongoose';
 import moment from 'moment';
 import ErrorHandler from '../utility/errors';
-import S3 from '../utility/s3';
-import { ERROR_CODES } from '../config/errors';
 import { IAddCropDTO } from '../interfaces/IUserCrops';
+import NotificationService from './notification';
 
 @Service()
 export default class CropService {
@@ -46,7 +45,7 @@ export default class CropService {
         const progress: number = differenceInDays / cropTotalTenureInDays;
         const currentWeek: number = parseInt(differenceInDays / 7 + '');
         (crop.progress = progress <= 1 ? progress : 1),
-        (crop.currentWeek = currentWeek <= crop.totalWeeks ? currentWeek : crop.totalWeeks);
+          (crop.currentWeek = currentWeek <= crop.totalWeeks ? currentWeek : crop.totalWeeks);
       });
 
       this.logger.info('all user crops response from DB After Modification %o', cropsResponse);
@@ -85,6 +84,7 @@ export default class CropService {
   public async addCrop(input: IAddCropDTO) {
     try {
       this.logger.info('Add Crop Service starts here %o', input);
+      let content = `You added ${input.crop.name} crop.`;
       let query: any = {
         userId: mongoose.Types.ObjectId(input.userId),
         crop: [
@@ -143,6 +143,12 @@ export default class CropService {
         { userId: mongoose.Types.ObjectId(input.userId) },
         { $push: { crop } },
       );
+      const notificationServiceInstance = Container.get(NotificationService);
+      const notificationResponse = await notificationServiceInstance.create({
+        content: content,
+        userId: input.userId,
+      });
+      this.logger.debug('Notification added in crop service %o', notificationResponse);
       const finalCrops = await this.userCropsModel.findOne({ userId: mongoose.Types.ObjectId(input.userId) });
       this.logger.info('Final Updated Crops %o', finalCrops);
       return finalCrops;
@@ -173,6 +179,13 @@ export default class CropService {
         { userId: mongoose.Types.ObjectId(input.userId) },
         { $set: { crop: updated } },
       );
+      let content = `You removed a crop.`
+      const notificationServiceInstance = Container.get(NotificationService);
+      const notificationResponse = await notificationServiceInstance.create({
+        content: content,
+        userId: input.userId,
+      });
+      this.logger.debug('Notification added in crop service %o', notificationResponse);
       const finalCrops = await this.userCropsModel.findOne({ userId: mongoose.Types.ObjectId(input.userId) });
       this.logger.info('Final crops after removed %o', finalCrops);
       return finalCrops;

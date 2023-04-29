@@ -5,6 +5,7 @@ import { IComments } from '@/interfaces/IComments';
 import { ICrop } from '@/interfaces/ICrop';
 import { IUserCrops } from '../../interfaces/IUserCrops';
 import { ICropDetails } from '@/interfaces/ICropDetails';
+import { INotification } from '@/interfaces/INotification';
 declare global {
   namespace Express {
     export interface Request {
@@ -19,5 +20,6 @@ declare global {
     export type CropModel = Model<ICrop & Document>;
     export type UserCropsModel = Model<IUserCrops & Document>;
     export type CropDetailsModel = Model<ICropDetails & Document>;
+    export type NotificationModel = Model<INotification & Document>;
   }
 }

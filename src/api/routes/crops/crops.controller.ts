@@ -83,7 +83,7 @@ export default {
         return APIResponses.badRequest(res, err.message, {});
       } else {
         logger.error('add crop API end with error %o', err);
-        return APIResponses.badRequest(res,'add user crop default error', {});
+        return APIResponses.badRequest(res, 'add user crop default error', {});
       }
     }
   },

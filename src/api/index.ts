@@ -6,6 +6,7 @@ import customer from './routes/customer';
 import post from './routes/post';
 import crops from './routes/crops';
 import home from './routes/home';
+import notification from './routes/notification';
 
 // guaranteed to get dependencies
 export default () => {
@@ -15,7 +16,8 @@ export default () => {
 	customer(app); 
 	post(app);
 	crops(app);
-	home(app)
+	home(app);
+	notification(app);
 	agendash(app);
 	return app
 }
