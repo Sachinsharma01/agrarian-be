@@ -9,7 +9,7 @@ export default class NotificationService {
     @Inject('notificationModel') private notificationModel: Models.NotificationModel,
   ) {}
 
-  public async create(payload: { content: string; userId: any }) {
+  public async create(payload: { content: string; userId: any, description: string }) {
     try {
       this.logger.info('Create notification service starts here %o', payload);
       const notificationId = 'N-' + Math.floor(100000 + Math.random() * 900000);

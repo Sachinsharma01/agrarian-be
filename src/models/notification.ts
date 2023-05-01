@@ -7,6 +7,10 @@ const Notification = new mongoose.Schema(
       type: String,
       default: '',
     },
+    description : {
+      type: String,
+      default: ""
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
     },

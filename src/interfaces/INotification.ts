@@ -3,4 +3,5 @@ export interface INotification {
     content: string;
     userId: any;
     read: boolean;
+    description: string;
 }

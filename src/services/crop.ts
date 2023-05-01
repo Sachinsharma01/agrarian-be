@@ -84,7 +84,7 @@ export default class CropService {
   public async addCrop(input: IAddCropDTO) {
     try {
       this.logger.info('Add Crop Service starts here %o', input);
-      let content = `You added ${input.crop.name} crop.`;
+      let content = `Crop Added`;
       let query: any = {
         userId: mongoose.Types.ObjectId(input.userId),
         crop: [
@@ -143,10 +143,14 @@ export default class CropService {
         { userId: mongoose.Types.ObjectId(input.userId) },
         { $push: { crop } },
       );
+      let description: string = `You added ${input.crop.name} crop sowed on ${moment(new Date(input.sowingDate)).format(
+        'dddd, MMMM Do YYYY, h:mm:ss a',
+      )}. The crop is currently in week ${currentWeek}.`;
       const notificationServiceInstance = Container.get(NotificationService);
       const notificationResponse = await notificationServiceInstance.create({
         content: content,
         userId: input.userId,
+        description: description,
       });
       this.logger.debug('Notification added in crop service %o', notificationResponse);
       const finalCrops = await this.userCropsModel.findOne({ userId: mongoose.Types.ObjectId(input.userId) });
@@ -179,11 +183,14 @@ export default class CropService {
         { userId: mongoose.Types.ObjectId(input.userId) },
         { $set: { crop: updated } },
       );
-      let content = `You removed a crop.`
+      const cropData: any = await this.cropDetailsModel.findOne({ _id: mongoose.Types.ObjectId(input.cropId) });
+      let content = `Crop Removed`;
+      let description: string = `You Removed ${cropData?.name} Crop.`;
       const notificationServiceInstance = Container.get(NotificationService);
       const notificationResponse = await notificationServiceInstance.create({
         content: content,
         userId: input.userId,
+        description: description,
       });
       this.logger.debug('Notification added in crop service %o', notificationResponse);
       const finalCrops = await this.userCropsModel.findOne({ userId: mongoose.Types.ObjectId(input.userId) });
