@@ -5,6 +5,7 @@ export interface IUser {
   password: string;
   salt: string;
   image: string;
+  isPaid: boolean;
 }
 
 export interface IUserInputDTO {

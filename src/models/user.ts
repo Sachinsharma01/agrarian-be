@@ -47,6 +47,10 @@ const User = new mongoose.Schema(
     role: {
       type: String,
       default: "farmer"
+    },
+    isPaid: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true },
