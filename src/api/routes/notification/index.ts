@@ -28,4 +28,6 @@ export default (app: any) => {
     }),
     controller.read,
   );
+
+  route.get('/count/:userId', middlewares.isAuth, middlewares.attachCurrentUser, controller.count);
 };

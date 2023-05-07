@@ -9,7 +9,7 @@ export default class NotificationService {
     @Inject('notificationModel') private notificationModel: Models.NotificationModel,
   ) {}
 
-  public async create(payload: { content: string; userId: any, description: string }) {
+  public async create(payload: { content: string; userId: any; description: string }) {
     try {
       this.logger.info('Create notification service starts here %o', payload);
       const notificationId = 'N-' + Math.floor(100000 + Math.random() * 900000);
@@ -80,7 +80,26 @@ export default class NotificationService {
         throw new ErrorHandler.BadError(err.message);
       } else {
         this.logger.error('Notification service emd with error %o', err);
-        throw new ErrorHandler.BadError('create notification default error');
+        throw new ErrorHandler.BadError('read notification default error');
+      }
+    }
+  }
+
+  public async getCount(userId: string): Promise<any> {
+    try {
+      this.logger.info('notification cont API starts here %o', userId);
+      const allUnreadCount = await this.notificationModel
+        .find({ userId: mongoose.Types.ObjectId(userId), read: false })
+        .count();
+      this.logger.info('unread notification count response from DB %o', allUnreadCount);
+      return allUnreadCount;
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        this.logger.error('Notification count service fails with error %o', err);
+        throw new ErrorHandler.BadError(err.message);
+      } else {
+        this.logger.error('Notification count service emd with error %o', err);
+        throw new ErrorHandler.BadError('notification count default error');
       }
     }
   }
