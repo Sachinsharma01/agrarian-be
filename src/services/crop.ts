@@ -184,8 +184,9 @@ export default class CropService {
         { $set: { crop: updated } },
       );
       const cropData: any = await this.cropDetailsModel.findOne({ _id: mongoose.Types.ObjectId(input.cropId) });
+      this.logger.debug("Crop data from DB %o", cropData);
       let content = `Crop Removed`;
-      let description: string = `You Removed ${cropData?.name} Crop.`;
+      let description: string = `You Removed Chilli Crop.`;
       const notificationServiceInstance = Container.get(NotificationService);
       const notificationResponse = await notificationServiceInstance.create({
         content: content,
