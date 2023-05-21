@@ -19,7 +19,7 @@ export default {
   /**
    * That long string from mlab
    */
-  databaseURL: process.env.MONGODB_URI,
+  databaseURL: process.env.ENV === 'PRODUCTION' ?  process.env.MONGODB_URI : process.env.MONGODB_URI_DEV,
 
   /**
    * Your secret sauce
