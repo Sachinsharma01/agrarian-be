@@ -19,7 +19,7 @@ export default {
   /**
    * That long string from mlab
    */
-  databaseURL: process.env.ENV === 'PRODUCTION' ?  process.env.MONGODB_URI : process.env.MONGODB_URI_DEV,
+  databaseURL: process.env.MONGODB_URI,
 
   /**
    * Your secret sauce
@@ -80,9 +80,9 @@ export default {
   aws: {
     accessKey: process.env.AWS_ACCESS_KEY,
     awsSecret: process.env.AWS_SECRET_KEY,
-    region: process.env.AWS_REGION
+    region: process.env.AWS_REGION,
   },
   fast2sms: {
-    apiKey: process.env.FAST2SMS_API
-  }
+    apiKey: process.env.FAST2SMS_API,
+  },
 };
