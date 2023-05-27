@@ -13,7 +13,7 @@ export class HomeService {
       const reqObj = {
         method: 'GET',
         url: config.weather.api,
-        params: { q: `${input.lat},${input.long}`, days: '3' },
+        params: { q: `${input.lat},${input.long}`, days: '5' },
         headers: {
           'X-RapidAPI-Key': config.weather.apiKey,
           'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',

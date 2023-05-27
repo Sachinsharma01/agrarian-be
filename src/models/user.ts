@@ -5,53 +5,53 @@ const User = new mongoose.Schema(
   {
     name: {
       type: String,
-      default: ""
+      default: '',
     },
     email: {
       type: String,
-      default: ""
+      default: '',
     },
     password: {
-      type: String
+      type: String,
     },
     crops: {
       type: [],
       default: [],
     },
     phone: {
-      type: String
-    },
-    address:{
       type: String,
-      default: ""
+    },
+    address: {
+      type: String,
+      default: '',
     },
     pincode: {
       type: String,
-      default: ""
+      default: '',
     },
     city: {
       type: String,
-      default: ""
+      default: '',
     },
     state: {
       type: String,
-      default: ""
+      default: '',
     },
     otp: {
-      type: Number
+      type: Number,
     },
     image: {
       type: String,
-      default: ""
+      default: '',
     },
     role: {
       type: String,
-      default: "farmer"
+      default: 'farmer',
     },
     isPaid: {
       type: Boolean,
-      default: false
-    }
+      default: true,
+    },
   },
   { timestamps: true },
 );
