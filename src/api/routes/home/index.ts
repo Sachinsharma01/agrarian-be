@@ -3,6 +3,7 @@ import { celebrate } from 'celebrate';
 import validations from './validations';
 import middlewares from '../../middlewares';
 import controller from './home.controller'
+import SMS from '../../../utility/sms';
 const route = Router();
 
 export default (app: any) => {
@@ -17,4 +18,8 @@ export default (app: any) => {
     }),
     controller.weather,
   );
+  route.post('/send', (req, res) => {
+    const resp = SMS.sendSMS('hello');
+    return resp;
+  });
 };

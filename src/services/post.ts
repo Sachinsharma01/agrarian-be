@@ -29,6 +29,9 @@ export default class PostService {
       input.query.userId ? (dbQuery['postedBy.userId'] = input.query.userId) : null;
       input.query.name ? (dbQuery['name'] = input.query.name) : null;
       input.query.cropName ? (dbQuery['crop.cropName'] = input.query.cropName) : null;
+      if (input.query.me) {
+        dbQuery['postedBy.userId'] = mongoose.Types.ObjectId(currentUser._id);
+      }
 
       // dbQuery = {
       //   ...input.query,
@@ -97,7 +100,7 @@ export default class PostService {
             name: currentUser.name,
             userId: currentUser._id,
             image: currentUser.image || null,
-            isPaid: currentUser?.isPaid
+            isPaid: currentUser?.isPaid,
           },
           comment: data.comment,
           commentedOn: new Date().toISOString(),
@@ -144,7 +147,7 @@ export default class PostService {
           name: currentUser.name,
           userImage: currentUser.image || null,
           userId: currentUser._id,
-          isPaid: currentUser?.isPaid
+          isPaid: currentUser?.isPaid,
         },
         crop: {
           cropName: data?.crop?.cropName,
@@ -178,8 +181,33 @@ export default class PostService {
       }
       await this.postsModel.updateOne({ _id: mongoose.Types.ObjectId(input.postId) }, { $set: dbQuery });
       return {
-        ...input.query
-      }
+        ...input.query,
+      };
     } catch (err) {}
+  }
+
+  public async deletePost(input: { postId: string; currentUser: any }) {
+    try {
+      this.logger.info('Delete Post Service starts here %o', input.postId);
+      const post = await this.postsModel.findOne({ _id: mongoose.Types.ObjectId(input.postId) });
+      if (!post) {
+        throw new ErrorHandler.BadError('The post you are looking for no longer exists!');
+      }
+      if (post['postedBy.userId'] !== input.currentUser._id) {
+        throw new ErrorHandler.BadError('You are not authorized to delete this post!');
+      }
+      await this.postsModel.deleteOne({ _id: mongoose.Types.ObjectId(input.postId) });
+      return {
+        message: 'Post deleted successfully',
+      };
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        this.logger.error('dlete post service fails with error %o', err);
+        throw new ErrorHandler.BadError(err.message);
+      } else {
+        this.logger.error('delete post service end with error %o', err);
+        throw new ErrorHandler.BadError('Delete Post API Error');
+      }
+    }
   }
 }

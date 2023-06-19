@@ -47,4 +47,14 @@ export default (app: any) => {
     middlewares.attachCurrentUser,
     controller.updatePost
   )
+  route.delete(
+    '/delete/:postId',
+    middlewares.isAuth,
+    middlewares.attachCurrentUser,
+    // middlewares.isAuthorizedToDeletePost,
+    celebrate({
+      params: validations.deletePost
+    }),
+    controller.deletePost
+  )
 };

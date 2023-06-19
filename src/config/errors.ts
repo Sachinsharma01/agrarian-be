@@ -12,6 +12,7 @@ export const ERROR_CODES = {
   AGPD: 'AGPD',
   AGLC_DEF: 'AGLC_DEF',
   AGUP: 'AGUP',
+  AGDP: 'AGDP'
 };
 export const ERRORS_LIST = [
   {
@@ -78,5 +79,10 @@ export const ERRORS_LIST = [
     code: ERROR_CODES.AGUP,
     description: 'Agrarian: Update Post Error',
     message: 'Update Post Error',
+  },
+  {
+    code: ERROR_CODES.AGDP,
+    description: 'Agrarian: Delete Post Error',
+    message: 'Delete Post Error',
   },
 ];

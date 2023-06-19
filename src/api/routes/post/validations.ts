@@ -5,6 +5,7 @@ export default {
     crop: Joi.string().optional(),
     page: Joi.number().optional(),
     limit: Joi.number().optional(),
+    me: Joi.boolean().optional(),
   }),
   addComment: Joi.object().keys({
     postId: Joi.string().required(),
@@ -21,5 +22,8 @@ export default {
   }),
   updatePost: Joi.object().keys({
     postId: Joi.string().required(),
-  })
+  }),
+  deletePost: Joi.object().keys({
+    postId: Joi.string().required(),
+  }),
 };

@@ -111,4 +111,26 @@ export default {
       }
     }
   },
+
+  deletePost: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      logger.debug('Delete Post API start here %o', req.params);
+      const input = {
+        postId: req.params.postId,
+        currentUser: req.currentUser,
+      };
+      const postServiceInstance = Container.get(PostService);
+      const response: any = await postServiceInstance.deletePost(input as any);
+      logger.info('Delete Post response in controller %o', response);
+      return APIResponses.success(res, 'Post Deleted successfully!', response);
+    } catch (err) {
+      if (err instanceof ErrorHandler.BadError) {
+        logger.error('Delete post details API fails with error %o', err);
+        return APIResponses.badRequest(res, err.message, {});
+      } else {
+        logger.error('Delete post details API end with error %o', err);
+        return APIResponses.badRequest(res, ErrorHandler.getErrorMessageWithCode(ERROR_CODES.AGDP), {});
+      }
+    }
+  }
 };
