@@ -85,4 +85,9 @@ export default {
   fast2sms: {
     apiKey: process.env.FAST2SMS_API,
   },
+  firebase: {
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    dbURL: process.env.FIREBASE_DB_URL,
+  },
 };

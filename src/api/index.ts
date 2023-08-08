@@ -7,6 +7,7 @@ import post from './routes/post';
 import crops from './routes/crops';
 import home from './routes/home';
 import notification from './routes/notification';
+import firebase from './routes/firebase';
 
 // guaranteed to get dependencies
 export default () => {
@@ -19,5 +20,6 @@ export default () => {
 	home(app);
 	notification(app);
 	agendash(app);
+	firebase(app);
 	return app
 }
