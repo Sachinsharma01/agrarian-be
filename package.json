@@ -27,6 +27,9 @@
   "author": "Sachin Sharma",
   "license": "ISC",
   "dependencies": {
+    "@logtail/node": "^0.4.21",
+    "@logtail/winston": "^0.4.21",
+    "@types/firebase": "^3.2.1",
     "@types/form-data": "^2.5.0",
     "@useoptic/express-middleware": "^0.0.5",
     "agenda": "^3.1.0",

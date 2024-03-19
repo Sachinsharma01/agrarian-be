@@ -16,6 +16,9 @@ export default {
    */
   port: 9000 || parseInt(process.env.PORT, 10),
 
+  env: process.env.ENV,
+
+  logTailToken: process.env.LOGTAIL_TOKEN,
   /**
    * That long string from mlab
    */
